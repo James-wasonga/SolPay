@@ -1,0 +1,192 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-display: 'Outfit', sans-serif;
+  --font-body: 'Space Grotesk', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  --sol-bg: #080C14;
+  --sol-card: #0D1220;
+  --sol-card2: #111827;
+  --sol-border: #1A2235;
+  --sol-border2: #243048;
+  --sol-purple: #9945FF;
+  --sol-green: #14F195;
+  --sol-blue: #00C2FF;
+  --sol-text: #E8EDF5;
+  --sol-muted: #6B7A99;
+  --sol-muted2: #4A5568;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--sol-bg);
+  color: var(--sol-text);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--sol-bg); }
+::-webkit-scrollbar-thumb { background: var(--sol-border2); border-radius: 3px; }
+
+/* ── Selection ── */
+::selection { background: rgba(153,69,255,0.3); color: white; }
+
+/* ── Background grid ── */
+.bg-grid {
+  background-image:
+    linear-gradient(rgba(26,34,53,0.6) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(26,34,53,0.6) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* ── Glow effects ── */
+.glow-purple { box-shadow: 0 0 30px rgba(153,69,255,0.25), 0 0 60px rgba(153,69,255,0.1); }
+.glow-green  { box-shadow: 0 0 30px rgba(20,241,149,0.25), 0 0 60px rgba(20,241,149,0.1); }
+.glow-blue   { box-shadow: 0 0 30px rgba(0,194,255,0.25),  0 0 60px rgba(0,194,255,0.1);  }
+
+/* ── Glass card ── */
+.glass {
+  background: rgba(13,18,32,0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--sol-border);
+}
+
+/* ── Gradient text ── */
+.gradient-text {
+  background: linear-gradient(135deg, #9945FF 0%, #14F195 50%, #00C2FF 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-text-purple {
+  background: linear-gradient(135deg, #9945FF, #C77DFF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Gradient borders ── */
+.gradient-border {
+  position: relative;
+}
+.gradient-border::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  background: linear-gradient(135deg, #9945FF, #14F195, #00C2FF);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+/* ── Buttons ── */
+.btn-primary {
+  background: linear-gradient(135deg, #9945FF 0%, #7B35CC 100%);
+  color: white;
+  font-family: var(--font-body);
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+.btn-primary::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.btn-primary:hover::after { opacity: 1; }
+.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 8px 25px rgba(153,69,255,0.4); }
+.btn-primary:active { transform: translateY(0); }
+
+.btn-secondary {
+  background: transparent;
+  color: var(--sol-text);
+  font-family: var(--font-body);
+  font-weight: 500;
+  border: 1px solid var(--sol-border2);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.btn-secondary:hover {
+  border-color: var(--sol-purple);
+  color: var(--sol-purple);
+  background: rgba(153,69,255,0.08);
+}
+
+/* ── Token badge ── */
+.token-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: var(--font-mono);
+  letter-spacing: 0.03em;
+}
+
+/* ── Status badge ── */
+.status-confirmed {
+  background: rgba(20,241,149,0.12);
+  color: #14F195;
+  border: 1px solid rgba(20,241,149,0.25);
+}
+.status-pending {
+  background: rgba(255,196,0,0.12);
+  color: #FFC400;
+  border: 1px solid rgba(255,196,0,0.25);
+}
+.status-failed {
+  background: rgba(255,77,77,0.12);
+  color: #FF4D4D;
+  border: 1px solid rgba(255,77,77,0.25);
+}
+
+/* ── Shimmer loading ── */
+.shimmer {
+  background: linear-gradient(90deg, var(--sol-card) 25%, var(--sol-border) 50%, var(--sol-card) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* ── Wallet adapter overrides ── */
+.wallet-adapter-button {
+  font-family: var(--font-body) !important;
+  background: linear-gradient(135deg, #9945FF, #7B35CC) !important;
+  border-radius: 12px !important;
+  font-weight: 600 !important;
+  transition: all 0.2s ease !important;
+}
+.wallet-adapter-button:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 8px 25px rgba(153,69,255,0.4) !important;
+}
+.wallet-adapter-modal-wrapper {
+  font-family: var(--font-body) !important;
+  background: var(--sol-card) !important;
+  border: 1px solid var(--sol-border) !important;
+}
+.wallet-adapter-modal-title { color: var(--sol-text) !important; }
+.wallet-adapter-modal-list { margin: 0 !important; }
