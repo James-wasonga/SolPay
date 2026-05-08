@@ -43,7 +43,7 @@ export async function buildTransferTx(
   const tx = new Transaction({
     recentBlockhash: blockhash,
     feePayer: fromPubkey,
-    lastValidBlockHeight,
+    // lastValidBlockHeight,
   });
   tx.add(
     SystemProgram.transfer({ fromPubkey, toPubkey, lamports })
