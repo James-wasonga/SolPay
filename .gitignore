@@ -1,8 +1,45 @@
-.env.local
-.env
+# Dependencies
 node_modules/
+.pnp
+.pnp.js
+
+# Next.js
 .next/
 out/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Build outputs
+dist/
+build/
+target/
+
+# Vercel
 .vercel/
+
+# Rust / Anchor
+**/*.rs.bk
+Cargo.lock
+.anchor/
+
+# Logs
 *.log
+npm-debug.log*
+
+# OS
 .DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# ─── Remove AI tooling artifacts before submitting ───────────────
+# These should NOT be in a hackathon submission
+.claude/
+AGENTS.md
+.cursorrules
+.aider*
