@@ -1,24 +1,48 @@
 # SolPay — The Stripe for Solana 💜
 
 > Accept SOL, USDC, and SPL token payments on any website in under 5 minutes.
-> Built for the Dev3pack Global Hackathon.
+> Built for payments in Solana Ecosystem.
 
 ---
+
+## Why SolPay?
+
+Accepting crypto payments shouldn't require every developer to understand wallets, transactions, token accounts, RPC infrastructure, confirmation handling, and payment UX.
+
+SolPay provides the building blocks for accepting Solana payments through a familiar checkout experience.
+
+Developers can integrate SolPay into an existing website and let SolPay handle the payment flow while merchants retain control of their funds.
+
+### For developers
+
+- Simple payment component
+- Wallet and QR checkout
+- SOL and SPL token support
+- Transaction confirmation
+- USD-denominated pricing
+- Easy integration with existing applications
+
+### For merchants
+
+- Accept Solana payments
+- Track transaction activity
+- View revenue and token breakdowns
+- Receive payments directly to a merchant wallet
 
 ## ✨ Features
 
-- 🔐 **Secure checkout modal** — Phantom wallet + QR code support
-- ⚡ **Real-time confirmation** — live polling on Solana blockchain
-- 🎉 **Confetti on success** — delightful UX moment
-- 📊 **Merchant dashboard** — revenue, transaction history, token breakdown
-- 🪙 **Multi-token** — SOL, USDC, BONK
-- 💱 **USD pricing** — live CoinGecko rates
-- 📋 **1-line embed** — drop `<SolPayButton />` anywhere
-- 🌐 **Devnet + Mainnet** — switch with one env var
+- 🔐 **Secure checkout** — Phantom wallet and QR-code payment support
+- ⚡ **Real-time confirmation** — monitor Solana transactions until confirmation
+- 🪙 **Multi-token payments** — support SOL, USDC, BONK, and other SPL tokens
+- 💱 **USD pricing** — display prices using live market rates
+- 📊 **Merchant dashboard** — track transactions, revenue, and token activity
+- 📋 **Simple integration** — add a SolPay payment button to an application
+- 🌐 **Devnet and Mainnet** — switch networks through configuration
+- 🔔 **Payment webhooks** — integrate confirmed payments into your application
 
 ---
 
-## 🚀 Quick Setup (5 minutes)
+## 🚀 Quick Setup
 
 ### Step 1 — Install dependencies
 
@@ -160,4 +184,4 @@ import { SolPayButton } from './components/SolPayButton';
 
 ---
 
-Built with 💜 for Dev3pack Global Hackathon
+Built with 💜 for developers and merchants on Solana.
