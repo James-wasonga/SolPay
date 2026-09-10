@@ -309,7 +309,7 @@ export default function LandingPage() {
       <footer className="py-10 px-6 text-center" style={{ borderTop: '1px solid var(--sol-border)' }}>
         <p className="text-sm" style={{ color: 'var(--sol-muted)' }}>
           Built with Next.js + Solana ·{' '}
-          <span style={{ color: 'var(--sol-purple)' }}>Dev3pack Global Hackathon 2025</span>
+          <span style={{ color: 'var(--sol-purple)' }}> Built for Future</span>
         </p>
       </footer>
     </div>
