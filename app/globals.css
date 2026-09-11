@@ -43,12 +43,12 @@ body {
 ::selection { background: rgba(153,69,255,0.3); color: white; }
 
 /* ── Background grid ── */
-.bg-grid {
+/* .bg-grid {
   background-image:
     linear-gradient(rgba(26,34,53,0.6) 1px, transparent 1px),
     linear-gradient(90deg, rgba(26,34,53,0.6) 1px, transparent 1px);
   background-size: 40px 40px;
-}
+} */
 
 /* ── Glow effects ── */
 .glow-purple { box-shadow: 0 0 30px rgba(153,69,255,0.25), 0 0 60px rgba(153,69,255,0.1); }
