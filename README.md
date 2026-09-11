@@ -98,36 +98,64 @@ To test actual payments you need free devnet SOL:
 4. Paste your wallet address → request 2 SOL
 5. Now visit http://localhost:3000/demo and try paying!
 
----
-
 ## 📁 Project Structure
 
 ```
 solpay/
 ├── app/
-│   ├── page.tsx              # Landing page
-│   ├── demo/page.tsx         # BrewNairobi demo store
-│   ├── dashboard/page.tsx    # Merchant dashboard
+│   ├── layout.tsx                        # Root layout + WalletProvider
+│   ├── page.tsx                          # Landing page (hero, stats, code snippet)
+│   ├── demo/
+│   │   └── page.tsx                      # BrewNairobi demo store (product cards + detail modal)
+│   ├── dashboard/
+│   │   └── page.tsx                      # Merchant dashboard (revenue, tx history, token breakdown)
+│   ├── docs/
+│   │   └── page.tsx                      # Full integration documentation portal
 │   └── api/
-│       ├── create-transaction/   # Builds unsigned tx
-│       ├── verify-transaction/   # Polls confirmation
-│       ├── transactions/         # Dashboard data
-│       ├── prices/               # USD price proxy
-│       └── webhook/              # Payment webhooks
+│       ├── create-transaction/
+│       │   └── route.ts                  # Builds unsigned SOL + real SPL token transactions
+│       ├── verify-transaction/
+│       │   └── route.ts                  # Polls Solana confirmation, writes to Supabase
+│       ├── transactions/
+│       │   └── route.ts                  # Dashboard data from Supabase
+│       ├── prices/
+│       │   └── route.ts                  # CoinGecko USD price proxy
+│       └── webhook/
+│           └── route.ts                  # HMAC-SHA256 signed payment webhooks
 ├── components/
-│   ├── CheckoutModal.tsx     # Core payment UI
-│   ├── SolPayButton.tsx      # Embeddable button
-│   ├── WalletProvider.tsx    # Solana wallet setup
-│   └── Navbar.tsx
+│   ├── CheckoutModal.tsx                 # Full checkout UI (wallet + QR + polling + confetti)
+│   ├── SolPayButton.tsx                  # Embeddable payment button component
+│   ├── WalletProvider.tsx                # Solana wallet adapter setup
+│   └── Navbar.tsx                        # Responsive nav with active link + mobile hamburger menu
 ├── lib/
-│   ├── solana.ts             # RPC + helpers
-│   ├── tokens.ts             # Token configs
-│   ├── prices.ts             # CoinGecko prices
-│   └── transactions.ts       # In-memory tx store
-└── .env.example
+│   ├── solana.ts                         # RPC connection, helpers, lastValidBlockHeight fix
+│   ├── db.ts                             # Supabase client + typed queries (replaces transactions.ts)
+│   ├── spl.ts                            # Real SPL token ATA transfers (USDC, BONK)
+│   ├── webhook.ts                        # HMAC-SHA256 signing and verification
+│   ├── tokens.ts                         # Token configs (SOL, USDC, BONK)
+│   └── prices.ts                         # CoinGecko price fetch + USD formatter
+├── programs/
+│   └── solpay/
+│       ├── src/
+│       │   └── lib.rs                    # Anchor program (merchant registry + SOL pay + SPL escrow)
+│       ├── tests/
+│       │   ├── solpay.ts                 # Anchor integration tests (8 test cases)
+│       │   └── tsconfig.json             # Separate TS config for Anchor tests
+│       └── Cargo.toml                    # Anchor program dependencies
+├── tests/
+│   └── transaction.test.ts               # Unit tests (18 cases — tx logic, SPL, HMAC, validation)
+├── supabase/
+│   └── schema.sql                        # Postgres schema (paste into Supabase SQL editor)
+├── Anchor.toml                           # Anchor workspace config + devnet program ID
+├── Cargo.toml                            # Rust workspace config
+├── jest.config.js                        # Jest config for unit tests
+├── rust-toolchain.toml                   # Pins Rust 1.79.0 for Anchor 0.29.0 compatibility
+├── tsconfig.json                         # Next.js TS config (excludes programs/ and target/)
+├── .vercelignore                         # Tells Vercel to ignore Anchor/Rust files
+├── .gitignore                            # Excludes .claude/, AGENTS.md, node_modules, target/
+├── .env.example                          # All required environment variables documented
+└── README.md
 ```
-
----
 
 ## 🌍 Deploy to Vercel (2 minutes)
 
