@@ -5,7 +5,21 @@ import Link from 'next/link';
 import { Navbar } from '@/components/Navbar';
 import { shortenAddress, explorerUrl } from '@/lib/solana';
 import { formatUSD } from '@/lib/prices';
-import type { TxRecord } from '@/lib/transactions';
+// import type { TxRecord } from '@/lib/transactions';
+
+interface TxRecord {
+  id?:         string;
+  signature:   string;
+  amount:      number;
+  token:       string;
+  usd_value:   number;
+  from_wallet: string;
+  to_wallet:   string;
+  status:     'confirmed' | 'pending' | 'failed';
+  label?:      string;
+  order_id?:   string | null;
+  created_at?: string;
+}
 
 const TOKEN_COLORS: Record<string, string> = {
   SOL: '#9945FF',
@@ -44,13 +58,31 @@ function StatCard({ label, value, sub, color, icon }: {
 
 function TxRow({ tx }: { tx: TxRecord }) {
   const color = TOKEN_COLORS[tx.token] ?? '#9945FF';
+  // const timeAgo = (() => {
+  //   const diff = Date.now() - tx.timestamp;
+  //   if (diff < 60000) return 'just now';
+  //   if (diff < 3600000) return `${Math.floor(diff / 60000)}m ago`;
+  //   if (diff < 86400000) return `${Math.floor(diff / 3600000)}h ago`;
+  //   return `${Math.floor(diff / 86400000)}d ago`;
+  // })();
+
   const timeAgo = (() => {
-    const diff = Date.now() - tx.timestamp;
-    if (diff < 60000) return 'just now';
-    if (diff < 3600000) return `${Math.floor(diff / 60000)}m ago`;
-    if (diff < 86400000) return `${Math.floor(diff / 3600000)}h ago`;
-    return `${Math.floor(diff / 86400000)}d ago`;
+    if (!tx.created_at) return 'recently';
+    try {
+      const diff = Date.now() - new Date(tx.created_at).getTime();
+      if (isNaN(diff)) return 'recently';
+      if (diff < 60_000)   return 'just now';
+      if (diff < 3_600_000) return `${Math.floor(diff / 60_000)}m ago`;
+      if (diff < 86_400_000) return `${Math.floor(diff / 3_600_000)}h ago`;
+      return `${Math.floor(diff / 86_400_000)}d ago`;
+    } catch {
+      return 'recently';
+    }
   })();
+
+  const displayAmount = typeof tx.amount === 'number' ? tx.amount : 0;
+  const displayUsd    = typeof tx.usd_value === 'number' ? tx.usd_value : 0;
+  const fromWallet    = tx.from_wallet ?? 'unknown';
 
   return (
     <div
@@ -78,15 +110,15 @@ function TxRow({ tx }: { tx: TxRecord }) {
           </span>
         </div>
         <p className="text-xs" style={{ color: 'var(--sol-muted)', fontFamily: 'var(--font-mono)' }}>
-          {shortenAddress(tx.fromWallet)} · {timeAgo}
+          {shortenAddress(fromWallet)} · {timeAgo}
         </p>
       </div>
       <div className="text-right flex-shrink-0">
         <p className="font-bold text-sm" style={{ color }}>
-          +{tx.amount} {tx.token}
+          +{displayAmount} {tx.token}
         </p>
         <p className="text-xs" style={{ color: 'var(--sol-muted)' }}>
-          {formatUSD(tx.usdValue)}
+          {formatUSD(displayUsd)}
         </p>
       </div>
       <a
@@ -112,15 +144,41 @@ export default function DashboardPage() {
   const [filter, setFilter] = useState('all');
   const [snippet, setSnippet] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [error,   setError]   = useState<string | null>(null);
+
+  // const fetchData = async () => {
+  //   try {
+  //     const res = await fetch('/api/transactions');
+  //     const data = await res.json();
+  //     setTxs(data.transactions);
+  //     setStats(data.stats);
+  //   } catch {}
+  //   setLoading(false);
+  // };
 
   const fetchData = async () => {
     try {
       const res = await fetch('/api/transactions');
+      if (!res.ok) throw new Error(`API returned ${res.status}`);
       const data = await res.json();
-      setTxs(data.transactions);
-      setStats(data.stats);
-    } catch {}
-    setLoading(false);
+  
+      const transactions: TxRecord[] = Array.isArray(data.transactions)
+        ? data.transactions : [];
+      const safeStats = {
+        total: typeof data.stats?.total === 'number' ? data.stats.total : 0,
+        today: typeof data.stats?.today === 'number' ? data.stats.today : 0,
+        count: typeof data.stats?.count === 'number' ? data.stats.count : 0,
+      };
+  
+      setTxs(transactions);
+      setStats(safeStats);
+      setError(null);
+    } catch (e) {
+      console.error('[Dashboard] fetch error:', e);
+      setError('Could not load transactions. Retrying...');
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -172,6 +230,20 @@ export default function DashboardPage() {
             </Link>
           </div>
         </div>
+        
+        {/* Error banner */}
+        {error && (
+          <div
+            className="mb-6 rounded-2xl p-4 flex items-center gap-3"
+            style={{ background: 'rgba(255,77,77,0.1)', border: '1px solid rgba(255,77,77,0.25)' }}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="10" stroke="#FF4D4D" strokeWidth="2"/>
+              <path d="M12 8v4m0 4h.01" stroke="#FF4D4D" strokeWidth="2" strokeLinecap="round"/>
+            </svg>
+            <p className="text-sm" style={{ color: '#FF4D4D' }}>{error}</p>
+          </div>
+        )}
 
         {/* Embed snippet */}
         {snippet && (
@@ -287,7 +359,9 @@ export default function DashboardPage() {
                 </p>
               </div>
             ) : (
-              filtered.map((tx) => <TxRow key={tx.id} tx={tx} />)
+              filtered.map((tx) => (
+                <TxRow key={tx.id ?? tx.signature} tx={tx} />
+              ))
             )}
           </div>
 
@@ -310,7 +384,7 @@ export default function DashboardPage() {
         <div className="grid md:grid-cols-3 gap-4 mt-6">
           {['SOL', 'USDC', 'BONK'].map((tok) => {
             const tokTxs = txs.filter((t) => t.token === tok && t.status === 'confirmed');
-            const total = tokTxs.reduce((s, t) => s + t.usdValue, 0);
+            const total = tokTxs.reduce((s, t) => s + (t.usd_value ?? 0), 0);
             const color = TOKEN_COLORS[tok];
             return (
               <div
