@@ -48,6 +48,9 @@ Developers can integrate SolPay into an existing website and let SolPay handle t
 
 ```bash
 cd solpay
+```
+
+```bash
 npm install
 ```
 
